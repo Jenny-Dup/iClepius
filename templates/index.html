@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iClepius - AI Symptom Checker</title>
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-blue-50 text-gray-800 font-sans">
+
+  <div class="container mx-auto p-6">
+    <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">iClepius - AI Symptom Checker</h1>
+    <p class="text-lg text-center mb-8">Enter your symptoms below and get AI-generated diagnoses.</p>
+
+    <!-- Symptom Input Form -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 max-w-md mx-auto">
+      <h2 class="text-2xl font-bold text-center text-gray-700 mb-4">Add a Symptom</h2>
+      <form id="symptomForm">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="symptom">Symptom</label>
+          <input id="symptom" type="text" placeholder="Enter symptom" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Add Symptom
+        </button>
+      </form>
+    </div>
+
+    <!-- Symptom Table -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-center text-gray-700 mb-4">Tracked Symptoms</h2>
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="px-4 py-2 border">Symptom</th>
+            <th class="px-4 py-2 border">Date Logged</th>
+            <th class="px-4 py-2 border">Action</th>
+          </tr>
+        </thead>
+        <tbody id="symptomTable">
+          <!-- Rows will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Generate Diagnosis Button -->
+    <div class="mt-4 text-center">
+      <button id="diagnoseButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Generate Diagnosis
+      </button>
+    </div>
+
+    <!-- Diagnosis Result -->
+    <div id="diagnosisResult" class="mt-6 text-center text-xl font-bold text-gray-700">
+      <!-- Diagnosis will be displayed here -->
+    </div>
+
+  </div>
+
+</body>
+</html>
