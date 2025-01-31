@@ -1,13 +1,23 @@
-from flask import request, jsonify
-from app import app, db
+from flask import Blueprint, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from app import db
 from models import User, Symptom
 import openai
+import os
+
+
+routes = Blueprint("routes", __name__)
 
 # Set OpenAI API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY:
+    raise ValueError("❌ ERROR: OPENAI_API_KEY is missing! Check your .env file or environment variables.")
+
+openai.api_key = OPENAI_API_KEY
 
 # User CRUD Routes
-@app.route("/api/users", methods=["POST"])
+@routes.route("/api/users", methods=["POST"])
 def create_user():
     data = request.json
     new_user = User(
@@ -20,7 +30,7 @@ def create_user():
     db.session.commit()
     return jsonify({"message": "User created successfully", "user": {"id": new_user.id, "name": new_user.name}}), 201
 
-@app.route("/api/users", methods=["GET"])
+@routes.route("/api/users", methods=["GET"])
 def get_users():
     users = User.query.all()
     return jsonify([
@@ -35,7 +45,7 @@ def get_users():
     ]), 200
 
 # Symptom CRUD Routes
-@app.route("/api/symptoms", methods=["POST"])
+@routes.route("/api/symptoms", methods=["POST"])
 def add_symptoms():
     data = request.json
     user_id = data['user_id']
@@ -46,7 +56,7 @@ def add_symptoms():
     db.session.commit()
     return jsonify({"message": "Symptoms added successfully"}), 201
 
-@app.route("/api/symptoms", methods=["GET"])
+@routes.route("/api/symptoms", methods=["GET"])
 def get_symptoms():
     symptoms = Symptom.query.all()
     return jsonify([
@@ -59,14 +69,14 @@ def get_symptoms():
         for symptom in symptoms
     ]), 200
 
-@app.route("/api/symptoms/<int:symptom_id>", methods=["DELETE"])
+@routes.route("/api/symptoms/<int:symptom_id>", methods=["DELETE"])
 def delete_symptom(symptom_id):
     symptom = Symptom.query.get_or_404(symptom_id)
     db.session.delete(symptom)
     db.session.commit()
     return jsonify({"message": "Symptom deleted successfully"}), 200
 
-@app.route("/api/reset", methods=["DELETE"])
+@routes.route("/api/reset", methods=["DELETE"])
 def reset_symptoms():
     try:
         db.session.query(Symptom).delete()
@@ -76,7 +86,7 @@ def reset_symptoms():
         return jsonify({"error": str(e)}), 500
 
 # AI-Powered Diagnosis Route
-@app.route("/api/diagnose", methods=["POST"])
+@routes.route("/api/diagnose", methods=["POST"])
 def diagnose():
     data = request.json
     symptoms = data.get("symptoms", [])

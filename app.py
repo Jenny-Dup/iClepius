@@ -1,25 +1,36 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 
-app = Flask(__name__)
+load_dotenv()
 
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///iclepius.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy()
 
-# Initialize Database and CORS
-db = SQLAlchemy(app)
-CORS(app)
+def create_app():
+    app = Flask(__name__)
 
-# Home route - Serves index.html
-@app.route("/")
-def home():
-    return render_template("index.html")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///iclepius.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Import routes AFTER initializing app and db (avoids circular imports)
-import routes
+    db.init_app(app)
+    CORS(app)
 
-# Run Flask app
+    if not os.getenv("OPENAI_API_KEY"):
+        raise ValueError("❌ ERROR: OPENAI_API_KEY is missing! Check your .env file.")
+
+    from routes import routes
+    app.register_blueprint(routes)
+
+    @app.route("/")
+    def home():
+        return render_template("index.html")
+
+    return app
+
 if __name__ == "__main__":
+    app = create_app()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
