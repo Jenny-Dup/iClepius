@@ -15,7 +15,6 @@ async function fetchSymptoms() {
 
     const symptoms = await response.json();
 
-    // Clear the table before repopulating
     symptomTable.innerHTML = "";
 
     // Populate the table with symptoms
@@ -26,7 +25,7 @@ async function fetchSymptoms() {
         <td class="border px-4 py-2">${symptom.symptom}</td>
         <td class="border px-4 py-2">${new Date(symptom.date).toLocaleDateString()}</td>
         <td class="border px-4 py-2">
-          <button class="bg-red-500 text-white px-3 py-1 rounded delete-btn" data-id="${symptom.id}">
+          <button class="bg-red-400 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 ease-in-out delete-btn" data-id="${symptom.id}">
             Delete
           </button>
         </td>
@@ -56,7 +55,7 @@ async function deleteSymptom(symptomId) {
 
     if (response.ok) {
       console.log(`Symptom ID ${symptomId} deleted.`);
-      fetchSymptoms(); // Refresh the table after deletion
+      fetchSymptoms();
     } else {
       console.error("Failed to delete symptom:", await response.json());
     }
@@ -65,7 +64,6 @@ async function deleteSymptom(symptomId) {
   }
 }
 
-// Fetch symptoms on page load
 fetchSymptoms();
 
 // Handle form submission
@@ -75,8 +73,8 @@ symptomForm.addEventListener("submit", async (event) => {
   const symptomInput = document.getElementById("symptom");
 
   const symptomData = {
-    user_id: 1, // Static user ID for now
-    symptoms: [symptomInput.value], // Send symptom as an array
+    user_id: 1,
+    symptoms: [symptomInput.value],
   };
 
   try {
@@ -89,8 +87,8 @@ symptomForm.addEventListener("submit", async (event) => {
     });
 
     if (response.ok) {
-      symptomInput.value = ""; // Clear the input field
-      fetchSymptoms(); // Refresh the table
+      symptomInput.value = "";
+      fetchSymptoms();
     } else {
       console.error("Failed to add symptom:", await response.json());
     }
