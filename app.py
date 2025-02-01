@@ -1,12 +1,11 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from extensions import db
 
 load_dotenv()
 
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
