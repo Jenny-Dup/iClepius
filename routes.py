@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
 from app import db
 from models import User, Symptom
 import openai
